@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: stereo-api
+    ports:
+      - "7583:7583"
+    volumes:
+      # Mapujemy folder "downloads" z kontenera do folderu na Twoim komputerze
+      - ./downloads:/app/downloads
+    restart: unless-stopped # Kontener wstanie automatycznie po restarcie serwera/komputera
