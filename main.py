@@ -3,13 +3,11 @@ import time
 import asyncio
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 import yt_dlp
 from yt_dlp import YoutubeDL
 import uvicorn
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -60,9 +58,24 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Rate limiter
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
+# Simple rate limiting storage
+rate_limit_store = {}
+RATE_LIMIT_REQUESTS = 10
+RATE_LIMIT_SECONDS = 60
+
+def check_rate_limit(client_ip: str) -> bool:
+    now = time.time()
+    if client_ip not in rate_limit_store:
+        rate_limit_store[client_ip] = []
+    
+    # Remove old requests (older than 60 seconds)
+    rate_limit_store[client_ip] = [ts for ts in rate_limit_store[client_ip] if now - ts < RATE_LIMIT_SECONDS]
+    
+    if len(rate_limit_store[client_ip]) >= RATE_LIMIT_REQUESTS:
+        return False
+    
+    rate_limit_store[client_ip].append(now)
+    return True
 
 def create_file_response(file_path: str) -> FileResponse:
     """Helper to create consistent FileResponse"""
@@ -82,8 +95,16 @@ async def health_check():
     return {"status": "ok", "service": "soundcloud-mp3-api"}
 
 @app.get("/download/{url:path}")
-@limiter.limit("10/minute")
-async def get_music(url: str, request=None):
+async def get_music(url: str, request: Request):
+    # Rate limiting
+    client_ip = request.client.host
+    if not check_rate_limit(client_ip):
+        logger.warning(f"Rate limit exceeded for IP: {client_ip}")
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Maximum 10 requests per minute."
+        )
+    
     logger.info(f"Download request for: {url[:50]}...")
     ydl_opts_info = {'quiet': True, 'extract_flat': True} 
     
