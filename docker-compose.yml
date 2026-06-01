@@ -1,12 +1,16 @@
-version: '3.8'
-
 services:
   api:
     build: .
-    container_name: stereo-api
+    container_name: soundcloud-audio-stream-api
     ports:
-      - "7583:7583"
+      - "${PORT:-7583}:${PORT:-7583}"
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT:-7583}
+      - TTL_SECONDS=${TTL_SECONDS:-86400}
+      - CLEANUP_INTERVAL_MINUTES=${CLEANUP_INTERVAL_MINUTES:-60}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
     volumes:
-      # Mapujemy folder "downloads" z kontenera do folderu na Twoim komputerze
       - ./downloads:/app/downloads
-    restart: unless-stopped # Kontener wstanie automatycznie po restarcie serwera/komputera
+    restart: unless-stopped
