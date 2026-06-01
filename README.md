@@ -391,7 +391,7 @@ MIT License - See LICENSE file for details
 
 **Made with ❤️**
 
-For issues and feature requests: [GitHub Issues](https://github.com/XeNikk/soundcloud-audio-stream-api/issues)
+For issues and feature requests: [GitHub Issues](https://github.com/XeNikk/soundcloud-mp3-api/issues)
 
 This project is provided as-is. Respect SoundCloud ToS and artist copyrights.
 # SoundCloud Audio Stream API
@@ -787,6 +787,6 @@ MIT License - See LICENSE file for details
 
 **Made with ❤️**
 
-For issues and feature requests: [GitHub Issues](https://github.com/XeNikk/soundcloud-audio-stream-api/issues)
+For issues and feature requests: [GitHub Issues](https://github.com/XeNikk/soundcloud-mp3-api/issues)
 
 This project is provided as-is. Respect SoundCloud ToS and artist copyrights.
