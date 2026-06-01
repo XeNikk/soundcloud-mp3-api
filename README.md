@@ -321,9 +321,9 @@ spec:
 |-----------|-----------|---------|
 | **Framework** | FastAPI | 0.104.1 |
 | **Server** | Uvicorn | 0.24.0 |
-| **Download** | yt-dlp | 2024.1.1 |
+| **Download** | yt-dlp | >=2024.1.0 |
 | **Audio** | FFmpeg | Latest |
-| **Rate Limiting** | slowapi | 0.1.9 |
+| **Rate Limiting** | Built-in | - |
 | **Container** | Docker | 20.10+ |
 | **Python** | CPython | 3.11 |
 
